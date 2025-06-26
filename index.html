@@ -1,11 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sample Page</title>
+  <meta charset="UTF-8">
+  <title>R.E.P.O. Game</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #24292e; color: #fff; }
+    .container { max-width: 500px; margin: 40px auto; background: #1b1f23; padding: 2em; border-radius: 10px; }
+    h1 { text-align: center; color: #f9826c; }
+    .question { font-size: 1.2em; margin: 1em 0; }
+    input[type="text"] { width: 100%; padding: 0.5em; font-size: 1em; }
+    button { padding: 0.6em 1em; font-size: 1em; margin-top: 1em; background: #2ea44f; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    .score, .result { text-align: center; margin: 1em 0; }
+    .result.correct { color: #2ea44f; }
+    .result.incorrect { color: #f9826c; }
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <p>This is a sample HTML page.</p>
-  <a href="main.py"></a>
+  <div class="container">
+    <h1>R.E.P.O. Game</h1>
+    <div class="score" id="score"></div>
+    <div class="question" id="question"></div>
+    <input type="text" id="answer" placeholder="Type your answer here...">
+    <button onclick="submitAnswer()">Submit</button>
+    <div class="result" id="result"></div>
+    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Next Question</button>
+    <div class="result" id="final"></div>
+  </div>
+  <script>
+    const questions = [
+      {
+        question: "What command initializes a new Git repository?",
+        answer: "git init"
+      },
+      {
+        question: "How do you stage all files for commit?",
+        answer: "git add ."
+      },
+      {
+        question: "What command commits staged changes with a message?",
+        answer: "git commit -m 'message'"
+      },
+      {
+        question: "How do you check the status of your repo?",
+        answer: "git status"
+      },
+      {
+        question: "What command creates a new branch named 'feature'?",
+        answer: "git branch feature"
+      },
+      {
+        question: "How do you switch to the branch 'main'?",
+        answer: "git checkout main"
+      },
+      {
+        question: "How do you push your commits to the remote repository?",
+        answer: "git push"
+      },
+      {
+        question: "What command pulls the latest changes from the remote repo?",
+        answer: "git pull"
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let shuffled = questions.slice().sort(() => 0.5 - Math.random());
+
+    function showQuestion() {
+      document.getElementById('question').textContent = shuffled[current].question;
+      document.getElementById('answer').value = '';
+      document.getElementById('result').textContent = '';
+      document.getElementById('result').className = 'result';
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('score').textContent = `Score: ${score}/${shuffled.length}`;
+      document.getElementById('final').textContent = '';
+    }
+
+    function submitAnswer() {
+      let userAns = document.getElementById('answer').value.trim().toLowerCase();
+      let correctAns = shuffled[current].answer.toLowerCase();
+      let result = document.getElementById('result');
+      if (userAns === correctAns) {
+        result.textContent = "Correct!";
+        result.className = "result correct";
+        score++;
+      } else {
+        result.textContent = `Incorrect. The correct answer is: ${shuffled[current].answer}`;
+        result.className = "result incorrect";
+      }
+      document.getElementById('nextBtn').style.display = 'inline-block';
+      document.getElementById('score').textContent = `Score: ${score}/${shuffled.length}`;
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < shuffled.length) {
+        showQuestion();
+      } else {
+        document.getElementById('question').textContent = '';
+        document.getElementById('answer').style.display = 'none';
+        document.getElementById('result').textContent = '';
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('final').textContent = `Game Over! Final score: ${score}/${shuffled.length}`;
+      }
+    }
+
+    // Start the game
+    showQuestion();
+  </script>
 </body>
 </html>
